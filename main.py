@@ -76,7 +76,7 @@ class HotelSystem:
         conn = sqlite3.connect('hotel.db')
         cursor = conn.cursor()
         try:
-            cursor.execute("INSERT INTO rooms (room_number, room_type, price) VALUES (?, ?, ?)", (room_number, room_type, price))
+            cursor.execute("INSERT INTO rooms (room_number, room_type, price) VALUES (?, ?, ?)", (room_number, room_type, float(price)))
             conn.commit()
             messagebox.showinfo("Success", "Room added successfully!")
         except sqlite3.IntegrityError:
@@ -167,7 +167,11 @@ class HotelSystem:
         modal.geometry("400x300")
 
         for room in rooms:
-            tk.Label(modal, text=f"Room ID: {room[0]}, Number: {room[1]}, Type: {room[2]}, Price: ${room[3]:.2f}").pack()
+            try:
+                price = float(room[3])
+                tk.Label(modal, text=f"Room ID: {room[0]}, Number: {room[1]}, Type: {room[2]}, Price: ${price:.2f}").pack()
+            except ValueError:
+                tk.Label(modal, text=f"Room ID: {room[0]}, Number: {room[1]}, Type: {room[2]}, Price: {room[3]}").pack()
 
     def show_guests(self):
         conn = sqlite3.connect('hotel.db')
